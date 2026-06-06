@@ -1,10 +1,10 @@
 package com.app.ecom;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpSessionRequiredException;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +20,28 @@ public class UserController {
 //    }
 
     @GetMapping("/api/users")
-    public List<User> getAllUsers() {
-        return userService.FetchAllUser();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.FetchAllUser(), HttpStatus.OK);
+//        return  ResponseEntity.ok(userService.FetchAllUser());
     }
 
     @PostMapping("/api/users")
-    public String createUser(@RequestBody User user) {
+    public ResponseEntity<String> createUser(@RequestBody User user) {
         userService.addUser(user);
-        return "User added successfully";
+        return ResponseEntity.ok("User added successfully");
     }
+
+    @GetMapping("/api/users/{id}")
+    public ResponseEntity<User> getAllUser(@PathVariable Long id) {
+//        User user = userService.fetchUser(id);
+//        if (user == null){
+//            return ResponseEntity.notFound().build();
+//        }
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+
+        return userService.fetchUser(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(()->ResponseEntity.notFound().build());
+    }
+
 }
