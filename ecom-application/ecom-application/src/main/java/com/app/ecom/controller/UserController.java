@@ -1,5 +1,7 @@
 package com.app.ecom.controller;
 
+import com.app.ecom.dto.UserRequest;
+import com.app.ecom.dto.UserResponse;
 import com.app.ecom.service.UserService;
 import com.app.ecom.model.User;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +26,19 @@ public class UserController {
     @GetMapping
 //    @RequestMapping(value = "/api/users",method = RequestMethod.GET)// this is the just another way of
     // using getmapiing is the just the internal implementation of the getmapping nad this one way of  using requestmaping at method level.
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
         return new ResponseEntity<>(userService.FetchAllUser(), HttpStatus.OK);
 //        return  ResponseEntity.ok(userService.FetchAllUser());
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody User user) {
-        userService.addUser(user);
+    public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest) {
+        userService.addUser(userRequest);
         return ResponseEntity.ok("User added successfully");
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<User> getAllUser(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getAllUser(@PathVariable Long id) {
 //        User user = userService.fetchUser(id);
 //        if (user == null){
 //            return ResponseEntity.notFound().build();
@@ -49,8 +51,8 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<String> createUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        boolean updated = userService.updateUser(id, updatedUser);
+    public ResponseEntity<String> createUser(@PathVariable Long id, @RequestBody UserRequest userRequest) {
+        boolean updated = userService.updateUser(id, userRequest);
         if (updated) {
             return ResponseEntity.ok("User updated successfully");
         }
